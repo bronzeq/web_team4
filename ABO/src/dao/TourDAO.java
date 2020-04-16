@@ -58,7 +58,7 @@ public class TourDAO {
 		String menu_1_2_1 = "1. 편도\n2. 왕복";
 		String[] arMenu_1_2_1 = {"편도", "왕복"};
 		String menu_1_2_2 = "1. A호텔\n2. B호텔";
-		String[] arMenu_1_2_2 = {"A호텔"};
+		String[] arMenu_1_2_2 = {"A호텔", "B호텔", "C호텔"};
 		int choice = 0, country_choice = 0, trip_choice = 0, hotel_choice = 0, round_choice = 0;
 		ArrayList<String> user_choice = new ArrayList<String>();
 
