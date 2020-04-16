@@ -16,7 +16,7 @@ public class Index {
 		String[] arMenu_1_2_1 = {"편도", "왕복"};
 		String menu_1_2_2 = "1. A호텔\n2. B호텔";
 		String[] arMenu_1_2_2 = {"A호텔", "B호텔"};
-		int choice = 0, country_choice = 0, trip_choice = 0, hotel_choice = 0;
+		int choice = 0, country_choice = 0, trip_choice = 0, hotel_choice = 0, round_choice = 0;
 		ArrayList<String> user_choice = new ArrayList<String>();
 
 		while (true) {
@@ -51,8 +51,10 @@ public class Index {
 					System.out.println(menu_1_2);
 					country_choice = sc.nextInt();
 					user_choice.add(arMenu_1_2[country_choice - 1]);
-
-					switch (country_choice) {
+					trip_choice = sc.nextInt();
+					
+					
+					switch (trip_choice) {
 					// 항공권 예약 영역
 					case 1:
 //						"1. 편도\n2. 왕복\n"
