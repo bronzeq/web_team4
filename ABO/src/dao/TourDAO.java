@@ -44,6 +44,11 @@ public class TourDAO {
 	
 	
 	// 회원가입(아이디, 비밀번호, 이름, 전화번호, 이메일)
+	public void register() {
+
+		
+		
+	}
 	
 	
 	public void view() {
