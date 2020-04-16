@@ -7,50 +7,45 @@ import vo.TourDTO;
 
 public class TourDAO {
 	// 달력출력 메소드
-	
-	
-	
-	
+
 	// 결제 메소드(회원, 비회원)
 	// 나라, 편도 왕복, 호텔
 	public void pay(ArrayList<Object> user_choice, TourDTO user, int idx) {
-		if(user == null) {
-			//로그인 메소드
-			
-			
-		}
-		
-		if(user_choice.get(1) == null) {
-			
-		}
-		
-		
-		
-		
-	}
-	
-	
-	// 로그인 메소드()
-	
-	
-	
-	
-	
-	
-	// 중복확인 메소드(Tour DTO user , int idx)
-	
-	
-	
-	
-	
-	// 회원가입(아이디, 비밀번호, 이름, 전화번호, 이메일)
-	public void register() {
+		if (user == null) {
+			// 로그인 메소드
 
-		
-		
+		}
+
+		if (user_choice.get(1) == null) {
+
+		}
+
 	}
-	
-	
+
+	// 로그인 메소드()
+
+	// 중복확인 메소드(Tour DTO user , int idx)
+
+	// 회원가입 TourDTO(아이디, 비밀번호, 이름, 전화번호, 이메일)
+	public int register(TourDTO dto) {
+		int result = 0;
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:ora817", "br", "br");
+			Statement state = conn.createStatement();
+			result = state.executeUpdate("INSERT INTO register(id, pw, name, phone, email) VALUES" + " ('" + dto.getId()
+					+ "', '" + dto.getPw() + "', '" + dto.getName() + "', '" + dto.getPhone() + "', '" + dto.getEmail()
+					+ ")");
+			state.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		// 성공하면 1을 리턴
+		return result;
+	}
+
 	public void view() {
 
 		Scanner sc = new Scanner(System.in);
@@ -59,11 +54,11 @@ public class TourDAO {
 		String menu_1 = "1. 마이페이지\n2. 예매하기\n3. 로그아웃";
 		String menu_1_1 = ""; // 마이페이지 메뉴
 		String menu_1_2 = "1. 일본\n2. 미국\n3. 중국";
-		String[] arMenu_1_2 = {"일본", "미국", "중국"};
+		String[] arMenu_1_2 = { "일본", "미국", "중국" };
 		String menu_1_2_1 = "1. 편도\n2. 왕복";
-		String[] arMenu_1_2_1 = {"편도", "왕복"};
+		String[] arMenu_1_2_1 = { "편도", "왕복" };
 		String menu_1_2_2 = "1. A호텔\n2. B호텔";
-		String[] arMenu_1_2_2 = {"A호텔", "B호텔", "C호텔"};
+		String[] arMenu_1_2_2 = { "A호텔", "B호텔", "C호텔" };
 		int choice = 0, country_choice = 0, trip_choice = 0, hotel_choice = 0, round_choice = 0;
 		ArrayList<String> user_choice = new ArrayList<String>();
 
@@ -101,8 +96,7 @@ public class TourDAO {
 					user_choice.add(arMenu_1_2[country_choice - 1]);
 					System.out.println("1.항공기 예약\n2.호텔 예약");
 					trip_choice = sc.nextInt();
-					
-					
+
 					switch (trip_choice) {
 					// 항공권 예약 영역
 					case 1:
@@ -160,7 +154,7 @@ public class TourDAO {
 //				"1. 일본\n2. 미국\n3. 중국"
 				System.out.println(menu_1_2);
 				country_choice = sc.nextInt();
-				
+
 				System.out.println("1.항공기 예약\n2.호텔 예약");
 				trip_choice = sc.nextInt();
 				switch (trip_choice) {
@@ -208,10 +202,7 @@ public class TourDAO {
 				}
 			}
 		}
-	
+
 	}
-	
-	
-	
-	
+
 }
