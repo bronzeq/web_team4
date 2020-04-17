@@ -5,7 +5,16 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.Scanner;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import vo.TourDTO;
 
@@ -48,8 +57,9 @@ public class TourDAO {
 	
 	
 	// 회원가입 TourDTO(아이디, 비밀번호, 이름, 전화번호, 이메일)
-	public int register(TourDTO dto) {
+	public int register(TourDTO dto) throws AddressException, MessagingException{
 		int result = 0;
+		sendMail(dto);
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			//localaddress 자리에 ip 넣기
@@ -65,6 +75,47 @@ public class TourDAO {
 		}
 		//성공하면 1을 리턴
 		return result;	
+	}
+	
+	//메일 발송 메소드
+	public int sendMail(TourDTO dto) throws AddressException, MessagingException{
+		String host = "smtp.naver.com";
+		
+		//보내는 사람 이메일 주소(@naver.com)제외, 비밀번호
+		final String id = "---";
+		final String pw = "---";
+		int port = 465;
+		
+		String recipient = dto.getEmail();
+		String subject = "제목";
+		int body = 0;
+		
+		Properties props = System.getProperties();
+		
+		props.put("mail.smtp.host", host); 
+		props.put("mail.smtp.port", port); 
+		props.put("mail.smtp.auth", "true"); 
+		props.put("mail.smtp.ssl.enable", "true"); 
+		props.put("mail.smtp.ssl.trust", host);
+
+		Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator(){
+			protected javax.mail.PasswordAuthentication getPasswordAuthentication(){
+				return new javax.mail.PasswordAuthentication(id, pw);
+			}
+		});
+		session.setDebug(true);
+		
+		Message mimeMessage = new MimeMessage(session);
+		//internetAddress 안에 보내는 사람 이메일 주소 넣기
+		mimeMessage.setFrom(new InternetAddress("---"));
+		mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
+		
+		mimeMessage.setSubject(subject);
+		mimeMessage.setText(Integer.toString(body));
+		Transport.send(mimeMessage);
+		
+		//random을 통한 숫자가 담긴 body return
+		return body;
 	}
 	
 	public void view() {
@@ -107,7 +158,14 @@ public class TourDAO {
 				System.out.println("이메일을 입력하세요.");
 				dto.setEmail(sc.next());
 				
-				new TourDAO().register(dto);
+				try {
+					sendMail(dto);
+				} catch (AddressException e) {
+					e.printStackTrace();
+				} catch (MessagingException e) {
+					e.printStackTrace();
+				}
+				//new TourDAO().register(dto);
 				
 				break;
 			// 로그인 영역
