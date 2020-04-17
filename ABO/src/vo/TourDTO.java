@@ -5,7 +5,7 @@ public class TourDTO {
 	private String pw;
 	private String name;
 	private String phone;
-	private String e_mail;
+	private String email;
 	
 	public TourDTO() {}
 
@@ -41,12 +41,12 @@ public class TourDTO {
 		this.phone = phone;
 	}
 
-	public String getE_mail() {
-		return e_mail;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setE_mail(String e_mail) {
-		this.e_mail = e_mail;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
 	
