@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.Random;
 import java.util.Scanner;
 
 import javax.mail.Message;
@@ -59,26 +60,32 @@ public class TourDAO {
 	// 회원가입 TourDTO(아이디, 비밀번호, 이름, 전화번호, 이메일)
 	public int register(TourDTO dto) throws AddressException, MessagingException{
 		int result = 0;
-		sendMail(dto);
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			//localaddress 자리에 ip 넣기
-			Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localaddress:ora817", "br", "br");
-			Statement state = conn.createStatement();
-			result = state.executeUpdate("INSERT INTO register(id, pw, name, phone, email) VALUES"
-					+ " ('"+ dto.getId()+"', '" + dto.getPw() + "', '" + dto.getName() + "', '" + dto.getPhone() + "', '" + dto.getEmail() + ")");
-			state.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+		Random rand = new Random();
+		Scanner sc = new Scanner(System.in);
+		int code = (int)(rand.nextFloat() * 10000);
+		sendMail(dto, code);
+		System.out.print("코드를 입력하세요 : ");
+		if(sc.nextInt() == code) {
+			try {
+				Class.forName("oracle.jdbc.driver.OracleDriver");
+				//localaddress 자리에 ip 넣기
+				Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521", "hr", "hr");
+				Statement state = conn.createStatement();
+				result = state.executeUpdate("INSERT INTO REGISTER"
+						+ "(id, pw, name, phone, email) VALUES"
+						+ " ('"+ dto.getId()+"', '" + dto.getPw() + "', '" + dto.getName() + "', '" + dto.getPhone() + "', '" + dto.getEmail() + "')");
+				state.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} 
 		}
-		//성공하면 1을 리턴
 		return result;	
 	}
 	
 	//메일 발송 메소드
-	public int sendMail(TourDTO dto) throws AddressException, MessagingException{
+	public void sendMail(TourDTO dto, int code) throws AddressException, MessagingException{
 		String host = "smtp.naver.com";
 		
 		//보내는 사람 이메일 주소(@naver.com)제외, 비밀번호
@@ -87,8 +94,8 @@ public class TourDAO {
 		int port = 465;
 		
 		String recipient = dto.getEmail();
-		String subject = "제목";
-		int body = 0;
+		String subject = "메일 발송 확인";
+		int body = code;
 		
 		Properties props = System.getProperties();
 		
@@ -99,23 +106,22 @@ public class TourDAO {
 		props.put("mail.smtp.ssl.trust", host);
 
 		Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator(){
+			String userName = id;
+			String passWord = pw;
 			protected javax.mail.PasswordAuthentication getPasswordAuthentication(){
-				return new javax.mail.PasswordAuthentication(id, pw);
+				return new javax.mail.PasswordAuthentication(userName, passWord);
 			}
 		});
 		session.setDebug(true);
 		
 		Message mimeMessage = new MimeMessage(session);
-		//internetAddress 안에 보내는 사람 이메일 주소 넣기
-		mimeMessage.setFrom(new InternetAddress("---"));
+		//internetAddress 안에 보내는 사람 이메일 주소 넣기 (@naver.com) 포함
+		mimeMessage.setFrom(new InternetAddress("---@naver.com"));
 		mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
 		
 		mimeMessage.setSubject(subject);
 		mimeMessage.setText(Integer.toString(body));
 		Transport.send(mimeMessage);
-		
-		//random을 통한 숫자가 담긴 body return
-		return body;
 	}
 	
 	public void view() {
@@ -132,7 +138,7 @@ public class TourDAO {
 		String menu_1_2_2 = "1. A호텔\n2. B호텔";
 		String[] arMenu_1_2_2 = {"A호텔"};
 		int choice = 0, country_choice = 0, trip_choice = 0, hotel_choice = 0, round_choice = 0;
-		ArrayList<String> user_choice = new ArrayList<String>();
+		ArrayList<String> user_choice = new ArrayList<String>();		
 
 		while (true) {
 			System.out.println(title + menu);
@@ -149,7 +155,7 @@ public class TourDAO {
 				TourDTO dto = new TourDTO();
 				System.out.println("아이디를 입력하세요.");
 				dto.setId(sc.next());
-				System.out.println("비밀 번호를 입력하세요.");
+				System.out.println("비밀번호를 입력하세요.");
 				dto.setPw(sc.next());
 				System.out.println("이름을 입력하세요.");
 				dto.setName(sc.next());
@@ -159,13 +165,16 @@ public class TourDAO {
 				dto.setEmail(sc.next());
 				
 				try {
-					sendMail(dto);
+					if(new TourDAO().register(dto) == 1) {
+						System.out.println("회원가입 성공");
+					}else {
+						System.out.println("회원가입 실패");
+					}
 				} catch (AddressException e) {
 					e.printStackTrace();
 				} catch (MessagingException e) {
 					e.printStackTrace();
 				}
-				//new TourDAO().register(dto);
 				
 				break;
 			// 로그인 영역
