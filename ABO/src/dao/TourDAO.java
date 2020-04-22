@@ -1,11 +1,10 @@
 package dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
+
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Random;
@@ -22,6 +21,13 @@ import javax.mail.internet.MimeMessage;
 import vo.TourDTO;
 
 public class TourDAO {
+	Connection conn;
+	PreparedStatement pstm;
+	ResultSet rs;
+	
+	private final int KEY = 7;
+	
+	
 	// 달력출력 메소드
 
 	// 결제 메소드(회원, 비회원)
@@ -40,55 +46,90 @@ public class TourDAO {
 
 	// 로그인 메소드()
 
+	
 	// 중복확인 메소드
 	public boolean check_dup_id(String id) {
-		String str = "";
+		String query = "SELECT COUNT(*) FROM REGISTER WHERE ID = ?";
+		boolean check = true;
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			// localaddress 자리에 ip 넣기
-			Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521", "hr", "hr");
-			Statement state = conn.createStatement();
-			state.execute("SELECT COUNT(*) FROM REGISTER WHERE ID IN ('" + id + "')");
-			ResultSet resultSet = state.executeQuery("SELECT COUNT(*) FROM REGISTER WHERE ID IN ('" + id + "')");
-			if (resultSet.next()) {
-				str = resultSet.getString(1);
+			conn = DBConnection.getConnection();
+			pstm = conn.prepareStatement(query);
+			pstm.setString(1, id);
+			rs = pstm.executeQuery();
+			rs.next();
+			if (rs.getInt(1) == 0) {
+				check = false;
 			}
-			if (str.equals("0")) {
-				return false;
+			pstm.close();
+		} catch (SQLException sqle) {
+			System.out.println(sqle);
+			System.out.println("check_dup_id() 쿼리문 오류");
+		} catch (Exception e) {
+			System.out.println(e);
+			System.out.println("알 수 없는 오류(checkId 메소드)");
+		} finally {
+			try {
+				if(rs != null) {
+					rs.close();
+				}
+				if(pstm != null) {
+					pstm.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new RuntimeException(e.getMessage());
 			}
-			state.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		}
-		return true;
+		return check;
 	}
 
 	// 회원가입 TourDTO(아이디, 비밀번호, 이름, 전화번호, 이메일)
-	public int register(TourDTO dto) throws AddressException, MessagingException {
-		int result = 0;
+	public boolean register(TourDTO dto) throws AddressException, MessagingException {
+		boolean result = false;
+		String query = "";
 		Random rand = new Random();
 		Scanner sc = new Scanner(System.in);
 		int code = (int) (rand.nextFloat() * 10000);
 		sendMail(dto, code);
 		System.out.print("코드를 입력하세요 : ");
 		if (sc.nextInt() == code) {
+			query = "INSERT INTO REGISTER" 
+					+ "(id, pw, name, phone, email) "
+					+ "VALUES(?, ?, ?, ?, ?)";
 			try {
-				Class.forName("oracle.jdbc.driver.OracleDriver");
-				// localaddress 자리에 ip 넣기
-				Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521", "hr", "hr");
-				Statement state = conn.createStatement();
-				result = state.executeUpdate("INSERT INTO REGISTER" 
-						+ "(id, pw, name, phone, email) VALUES" + " ('"
-						+ dto.getId() + "', '" + dto.getPw() + "', '" 
-						+ dto.getName() + "', '" + dto.getPhone() + "', '"
-						+ dto.getEmail() + "')");
-				state.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+				int idx = 0;
+				conn = DBConnection.getConnection();
+				pstm = conn.prepareStatement(query);
+				pstm.setString(++idx, dto.getId());
+				pstm.setString(++idx, encrypt(dto));
+				pstm.setString(++idx, dto.getName());
+				pstm.setString(++idx, dto.getPhone());
+				pstm.setString(++idx, dto.getEmail());
+				pstm.executeQuery();
+				pstm.close();
+				result = true;
+			} catch (SQLException sqle) {
+				System.out.println(sqle);
+				System.out.println("register() 쿼리문 오류");
+			} catch (Exception e) {
+				System.out.println(e);
+				System.out.println("알 수 없는 오류(register())");
+			}finally {
+				try {
+					if(rs != null) {
+						rs.close();
+					}
+					if(pstm != null) {
+						pstm.close();
+					}
+					if(conn != null) {
+						conn.close();
+					}
+				} catch (SQLException e) {
+					throw new RuntimeException(e.getMessage());
+				}
 			}
 		}
 		return result;
@@ -98,7 +139,7 @@ public class TourDAO {
 	public void sendMail(TourDTO dto, int code) throws AddressException, MessagingException {
 		String host = "smtp.naver.com";
 
-		// 보내는 사람 이메일 주소(@naver.com)제외, 비밀번호
+		// --- 안에 보내는 사람 이메일 주소(@naver.com)제외, 비밀번호
 		final String id = "yhya0904";
 		final String pw = "leeheader7679!";
 		int port = 465;
@@ -126,15 +167,21 @@ public class TourDAO {
 		session.setDebug(true);
 
 		Message mimeMessage = new MimeMessage(session);
-		// internetAddress 안에 보내는 사람 이메일 주소 넣기 (@naver.com) 포함
+		// --- 안에 보내는 사람 이메일 주소 넣기 (@naver.com) 포함
 		mimeMessage.setFrom(new InternetAddress("yhya0904@naver.com"));
 		mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
-
 		mimeMessage.setSubject(subject);
 		mimeMessage.setText(Integer.toString(body));
 		Transport.send(mimeMessage);
 	}
 
+	public String encrypt(TourDTO dto) {
+		String en_pw = "";
+		for (int i = 0; i < dto.getPw().length(); i++) {
+			en_pw += (char)(dto.getPw().charAt(i) * KEY);
+		}
+		return en_pw;
+	}
 	public void view() {
 
 		Scanner sc = new Scanner(System.in);
@@ -202,7 +249,7 @@ public class TourDAO {
 				dto.setEmail(sc.next());
 
 				try {
-					if (new TourDAO().register(dto) == 1) {
+					if (new TourDAO().register(dto)) {
 						System.out.println("회원가입 성공");
 					} else {
 						System.out.println("회원가입 실패");
