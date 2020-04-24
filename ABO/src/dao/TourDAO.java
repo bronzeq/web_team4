@@ -5,7 +5,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Scanner;
@@ -24,11 +26,136 @@ public class TourDAO {
 	Connection conn;
 	PreparedStatement pstm;
 	ResultSet rs;
-	
+	TourDTO dto = null;
+
 	private final int KEY = 7;
-	
-	
+
 	// 달력출력 메소드
+
+	// 항공기 출력 메소드
+	public void airplaneList(String userDate) {
+		String query = "";
+		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd HH");
+		// time1 == user가 선택한 시간
+		// time2 == 현재시간
+		Date time = new Date();
+		String time1 = format1.format(userDate);
+		String time2 = format1.format(time);
+
+		int compare = time1.compareTo(time2);
+		if (compare > 0) {
+			// 선택한 날이 현재 날보다 이후일 때
+			query = "SELECT * FROM AIRPLANE WHERE DATE = \'" + userDate + "\'";
+			showAirplaneList(query);
+		} else if (compare < 0) {
+			// 선택한 날이 현재 날보다 이전일때
+			System.out.println(time2 + " 이전의 날을 입력했습니다.");
+		} else {
+			// 선택한 날이 현재 날과 같을 때
+			query = "";
+			showAirplaneList(query);
+		}
+
+	}
+
+	// 항공기 리스트 출력
+	public void showAirplaneList(String query) {
+		try {
+			conn = DBConnection.getConnection();
+			pstm = conn.prepareStatement(query);
+			rs = pstm.executeQuery();
+			System.out.println("-----------------------------------------------------------------------");
+			// column명 쓰기
+			System.out.println();
+			while (rs.next()) {
+				System.out.println(rs.getString(1) + "\t" + rs.getString(2) + "\t" + rs.getString(3) + "\t"
+						+ rs.getString(4) + "\t" + rs.getString(5) + "\t" + rs.getInt(6) + "\t" + rs.getString(7) + "\t"
+						+ rs.getInt(8));
+			}
+			System.out.println("-----------------------------------------------------------------------");
+			pstm.close();
+		} catch (SQLException sqle) {
+			System.out.println(sqle);
+			System.out.println("showAirplaneList() 쿼리문 오류");
+		} catch (Exception e) {
+			System.out.println(e);
+			System.out.println("알 수 없는 오류(showAirplaneList())");
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstm != null) {
+					pstm.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new RuntimeException(e.getMessage());
+			}
+		}
+	}
+
+	// 호텔 리스트 출력
+	public void hotelList(Date userDate) {
+		String query = "";
+		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+		// time1 == user가 선택한 시간
+		// time2 == 현재시간
+		Date time = new Date();
+		String time1 = format1.format(userDate);
+		String time2 = format1.format(time);
+
+		int compare = time1.compareTo(time2);
+		if (compare < 0) {
+			// 선택한 날이 현재 날보다 이전일때
+			System.out.println(time2 + " 이전의 날을 입력했습니다.");
+		} else {
+			// 선택한 날이 현재 날과 같거나 이후일 때
+			query = "SELECT * FROM HOTEL WHERE DATE = \'" + userDate + "\'";
+			showAirplaneList(query);
+		}
+
+	}
+
+	// 호텔 리스트 출력
+	public void showHotelList(String query) {
+		try {
+			conn = DBConnection.getConnection();
+			pstm = conn.prepareStatement(query);
+			rs = pstm.executeQuery();
+			System.out.println("-----------------------------------------------------------------------");
+			// column명 쓰기
+			System.out.println();
+			while (rs.next()) {
+				System.out.println(rs.getInt(1) + "\t" + rs.getInt(2) + "\t" + rs.getInt(3) + "\t" + rs.getString(4));
+			}
+			System.out.println("-----------------------------------------------------------------------");
+			pstm.close();
+		} catch (SQLException sqle) {
+			System.out.println(sqle);
+			System.out.println("showHotelList() 쿼리문 오류");
+		} catch (Exception e) {
+			System.out.println(e);
+			System.out.println("알 수 없는 오류(showHotelList())");
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstm != null) {
+					pstm.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new RuntimeException(e.getMessage());
+			}
+		}
+	}
 
 	// 결제 메소드(회원, 비회원)
 	// 나라, 편도 왕복, 호텔
@@ -45,9 +172,44 @@ public class TourDAO {
 	}
 
 	// 로그인 메소드()
+	public boolean login(String id, String pw) {
+		boolean check = false;
+		String query = "SELECT COUNT(*) FROM REGISTER" + " WHERE ID = ? AND PW = ?";
+		try {
+			conn = DBConnection.getConnection();
+			pstm = conn.prepareStatement(query);
+			pstm.setString(1, id);
+			pstm.setString(2, encrypt(pw));
+			rs = pstm.executeQuery();
+			if (rs.next()) {
+				if (rs.getInt(1) == 1) {
+					check = true;
+				}
+			}
+		} catch (SQLException sqle) {
+			System.out.println(sqle);
+			System.out.println("login() 쿼리문 오류");
+		} catch (Exception e) {
+			System.out.println(e);
+			System.out.println("그밖의 문제(login())");
+		} finally {
+			try {
+				if (pstm != null) {
+					pstm.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new RuntimeException(e.getMessage());
+			}
+		}
 
-	
-	// 중복확인 메소드
+		return check;
+
+	}
+
+	// 아이디 중복확인 메소드
 	public boolean check_dup_id(String id) {
 		String query = "SELECT COUNT(*) FROM REGISTER WHERE ID = ?";
 		boolean check = true;
@@ -66,16 +228,16 @@ public class TourDAO {
 			System.out.println("check_dup_id() 쿼리문 오류");
 		} catch (Exception e) {
 			System.out.println(e);
-			System.out.println("알 수 없는 오류(checkId 메소드)");
+			System.out.println("알 수 없는 오류(check_dup_id() 메소드)");
 		} finally {
 			try {
-				if(rs != null) {
+				if (rs != null) {
 					rs.close();
 				}
-				if(pstm != null) {
+				if (pstm != null) {
 					pstm.close();
 				}
-				if(conn != null) {
+				if (conn != null) {
 					conn.close();
 				}
 			} catch (SQLException e) {
@@ -86,27 +248,25 @@ public class TourDAO {
 	}
 
 	// 회원가입 TourDTO(아이디, 비밀번호, 이름, 전화번호, 이메일)
-	public boolean register(TourDTO dto) throws AddressException, MessagingException {
+	public boolean register(String id, String pw, String name, String phone, String email) throws AddressException, MessagingException {
 		boolean result = false;
 		String query = "";
 		Random rand = new Random();
 		Scanner sc = new Scanner(System.in);
 		int code = (int) (rand.nextFloat() * 10000);
-		sendMail(dto, code);
+		sendMail(email, code);
 		System.out.print("코드를 입력하세요 : ");
 		if (sc.nextInt() == code) {
-			query = "INSERT INTO REGISTER" 
-					+ "(id, pw, name, phone, email) "
-					+ "VALUES(?, ?, ?, ?, ?)";
+			query = "INSERT INTO REGISTER" + "(id, pw, name, phone, email) " + "VALUES(?, ?, ?, ?, ?)";
 			try {
 				int idx = 0;
 				conn = DBConnection.getConnection();
 				pstm = conn.prepareStatement(query);
-				pstm.setString(++idx, dto.getId());
-				pstm.setString(++idx, encrypt(dto));
-				pstm.setString(++idx, dto.getName());
-				pstm.setString(++idx, dto.getPhone());
-				pstm.setString(++idx, dto.getEmail());
+				pstm.setString(++idx, id);
+				pstm.setString(++idx, encrypt(pw));
+				pstm.setString(++idx, name);
+				pstm.setString(++idx, phone);
+				pstm.setString(++idx, email);
 				pstm.executeQuery();
 				pstm.close();
 				result = true;
@@ -116,15 +276,15 @@ public class TourDAO {
 			} catch (Exception e) {
 				System.out.println(e);
 				System.out.println("알 수 없는 오류(register())");
-			}finally {
+			} finally {
 				try {
-					if(rs != null) {
+					if (rs != null) {
 						rs.close();
 					}
-					if(pstm != null) {
+					if (pstm != null) {
 						pstm.close();
 					}
-					if(conn != null) {
+					if (conn != null) {
 						conn.close();
 					}
 				} catch (SQLException e) {
@@ -136,7 +296,7 @@ public class TourDAO {
 	}
 
 	// 메일 발송 메소드
-	public void sendMail(TourDTO dto, int code) throws AddressException, MessagingException {
+	public void sendMail(String email, int code) throws AddressException, MessagingException {
 		String host = "smtp.naver.com";
 
 		// --- 안에 보내는 사람 이메일 주소(@naver.com)제외, 비밀번호
@@ -144,7 +304,7 @@ public class TourDAO {
 		final String pw = "leeheader7679!";
 		int port = 465;
 
-		String recipient = dto.getEmail();
+		String recipient = email;
 		String subject = "메일 발송 확인";
 		int body = code;
 
@@ -175,13 +335,14 @@ public class TourDAO {
 		Transport.send(mimeMessage);
 	}
 
-	public String encrypt(TourDTO dto) {
+	public String encrypt(String pw) {
 		String en_pw = "";
-		for (int i = 0; i < dto.getPw().length(); i++) {
-			en_pw += (char)(dto.getPw().charAt(i) * KEY);
+		for (int i = 0; i < pw.length(); i++) {
+			en_pw += (char) (pw.charAt(i) * KEY);
 		}
 		return en_pw;
 	}
+
 	public void view() {
 
 		Scanner sc = new Scanner(System.in);
@@ -198,6 +359,14 @@ public class TourDAO {
 		int choice = 0, country_choice = 0, trip_choice = 0, hotel_choice = 0, round_choice = 0, login_choice = 0;
 		ArrayList<String> user_choice = new ArrayList<String>();
 		boolean id_check = true;
+		// login 여부 확인
+		boolean login_flag = false;
+		
+		String id = "";
+		String pw = "";
+		String name = "";
+		String phone = "";
+		String email = "";
 
 		while (true) {
 			System.out.println(title + menu);
@@ -211,45 +380,42 @@ public class TourDAO {
 			switch (choice) {
 			// 회원가입 영역
 			case 1:
-				TourDTO dto = new TourDTO();
-
-				//ID입력
+				// ID입력
 				System.out.println("아이디를 입력하세요.");
-				dto.setId(sc.next());
-				if(check_dup_id(dto.getId()) == true) {
+				id = sc.next();
+				if (check_dup_id(id) == true) {
 					System.out.println("중복된 아이디 입니다.");
 					while (id_check) {
-						System.out.print("1. 계속\n2. 나가기\n");
+						System.out.print("1. 아이디 다시 입력하기\n2. 나가기\n");
 						login_choice = sc.nextInt();
 						switch (login_choice) {
-							case 1:
-								System.out.println("아이디를 입력하세요.");
-								dto.setId(sc.next());
-								if(check_dup_id(dto.getId()) == false) {
-									id_check = false;
-									break;
-								}
-								System.out.println("중복된 아이디 입니다.");
+						case 1:
+							System.out.println("아이디를 입력하세요.");
+							id = sc.next();
+							if (check_dup_id(id) == false) {
+								id_check = false;
 								break;
-							case 2:
-								view();
+							}
+							System.out.println("중복된 아이디 입니다.");
+							break;
+						case 2:
+							view();
 						}
 					}
 				}
 				id_check = true;
-				
-				
+
 				System.out.println("비밀번호를 입력하세요.");
-				dto.setPw(sc.next());
+				pw = sc.next();
 				System.out.println("이름을 입력하세요.");
-				dto.setName(sc.next());
+				name = sc.next();
 				System.out.println("번호를 입력하세요.");
-				dto.setPhone(sc.next());
+				phone = sc.next();
 				System.out.println("이메일을 입력하세요.");
-				dto.setEmail(sc.next());
+				email = sc.next();
 
 				try {
-					if (new TourDAO().register(dto)) {
+					if (register(id, pw, name, phone, email)) {
 						System.out.println("회원가입 성공");
 					} else {
 						System.out.println("회원가입 실패");
@@ -261,9 +427,29 @@ public class TourDAO {
 				}
 
 				break;
-			// 로그인 영역
 
+			// 로그인 영역
 			case 2:
+				System.out.print("아이디를 입력하세요 : ");
+				id = sc.next();
+				System.out.print("비밀번호를 입력하세요 : ");
+				pw = sc.next();
+
+				try {
+					if (check_dup_id(id)) {
+						if (login(id, pw)) {
+							System.out.println("로그인 성공");
+							login_flag = true;
+						} else {
+							System.out.println("비밀번호 오류");
+						}
+					} else {
+						System.out.println("아이디가 없습니다.");
+					}
+				} catch (Exception e) {
+					System.out.println("로그인 오류");
+				}
+
 				// "1. 마이페이지\n2. 예매하기\n3. 로그아웃"
 				System.out.println(menu_1);
 				choice = sc.nextInt();
