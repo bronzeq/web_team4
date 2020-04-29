@@ -26,11 +26,12 @@ public class HotelReservationControl {
 	      }
 	      try {
 	          String query = "SELECT COUNT(*) FROM HOTEL_INFORMATION "
-	                + "WHERE HOTEL_INFORMATION = ?";
+	                + "WHERE HOTEL_RESERVATION = ?";
 	          conn = DBConnection.getConnection();
 	          pstm = conn.prepareStatement(query);
 	          pstm.setString(1, session_hotel_reservation);
 	          rs = pstm.executeQuery();
+	          rs.next();
 	          if(rs.getInt(1) == 0) {
 	             query = "INSERT INTO HOTEL_INFORMATION"
 	                   + " (ID, HOTEL_RESERVATION, HOTEL_NUM, CHECK_IN, CHECK_OUT, ROOM_COUNT, HOTEL_TOTAL_PRICE)"
@@ -42,7 +43,7 @@ public class HotelReservationControl {
 	             pstm.setString(4, null);
 	             pstm.setString(5, null);
 	             pstm.setString(6, null);
-	             pstm.setString(7, null);
+	             pstm.setInt(7, 0);
 	             pstm.executeQuery();
 	          } else {
 	             //session_hotel_reservation 코드가 이미 DB에 있을 경우
