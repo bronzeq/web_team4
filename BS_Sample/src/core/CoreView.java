@@ -31,11 +31,11 @@ public class CoreView {
     String menu = "1. 회원가입\n2. 로그인\n3. 비회원 예매하기\n4. 종료";
     String menu_1 = "1. 마이페이지\n2. 예매하기\n3. 로그아웃";
     String menu_1_1 = "1.예약 목록\n2.예약 수정\n3.회원 정보 수정 "; // 마이페이지 메뉴
-    String[] arMenu_1_2 = { "일본", "미국", "중국" };
+    String[] arMenu_1_2 = {"Korea", "Japan", "America", "China" };
     String[] arMenu_1_2_1 = { "편도", "왕복" };
     String[] arMenu_1_2_2 = { "A호텔","B호텔" };
     String[] ar_reservation_chioce = {"항공권예약","호텔예약"};
-    String[] ar_planeclass_choice = {"퍼스트","비즈니스","이코노미"}; 
+    String[] ar_planeclass_choice = {"first_c", "business_c","economy_c"}; 
     int choice = 0, trip_choice = 0,  round_choice = 0, login_choice = 0;
     int departure_choice = 0, arrival_choice = 0, city_choice = 0;
     String plane_num1 = "", plane_num2 = "", hotal_num = "";
@@ -213,14 +213,16 @@ public class CoreView {
 				for (int i = 0; i < arMenu_1_2.length; i++) {
 					System.out.println((i + 1) + arMenu_1_2[i]);
 				}
-				departure_choice = sc.nextInt();
+				//인덱스로 접근하기 위해 -1
+				departure_choice = sc.nextInt() - 1;
 				
 				//도착지
 				System.out.println("[도착지]");
 				for (int i = 0; i < arMenu_1_2.length; i++) {
 					System.out.println((i + 1) + arMenu_1_2[i]);
 				}
-				arrival_choice = sc.nextInt();
+				//인덱스로 접근하기 위해 -1
+				arrival_choice = sc.nextInt() - 1;
 				
 				System.out.println("1. 편도\n2. 왕복\n");
 				trip_choice = sc.nextInt();
@@ -232,10 +234,10 @@ public class CoreView {
 //					★달력 출력메소드;
 					//출발지, 도착지, 선택날짜, 선택시간 넘겨줌
 					//airplaneList()에서 해당 조건에 맞는 planeList 출력
-					String userDate =  mainPromptCalender.runPROMPT();
+					String userDate = mainPromptCalender.runPROMPT();
 					System.out.print("시간을 입력하세요 : ");
 					int userTime = sc.nextInt();
-					planeControl.airplaneList(arMenu_1_2[departure_choice-1], arMenu_1_2[arrival_choice-1], userDate, userTime);
+					planeControl.airplaneList(arMenu_1_2[departure_choice], arMenu_1_2[arrival_choice], userDate, userTime);
 					// 리스트에서 비행기번호 입력
 					//여기부터 while 문으로 감싸야 할듯? => 중복검사 때문에
 					System.out.println("비행기 번호 입력 : ");
@@ -283,7 +285,7 @@ public class CoreView {
 					userDate =  mainPromptCalender.runPROMPT();
 					System.out.print("시간을 입력하세요 : ");
 					userTime = sc.nextInt();
-					planeControl.airplaneList(arMenu_1_2[departure_choice-1], arMenu_1_2[arrival_choice-1], userDate, userTime);
+					planeControl.airplaneList(arMenu_1_2[departure_choice], arMenu_1_2[arrival_choice], userDate, userTime);
 					// 리스트에서 비행기번호 입력
 					System.out.println("비행기 번호 입력 : ");
 					plane_num1 = sc.next();
@@ -293,7 +295,7 @@ public class CoreView {
 					userDate =  mainPromptCalender.runPROMPT();
 					System.out.print("시간을 입력하세요 : ");
 					userTime = sc.nextInt();
-					planeControl.airplaneList(arMenu_1_2[arrival_choice-1],arMenu_1_2[departure_choice-1] , userDate, userTime);
+					planeControl.airplaneList(arMenu_1_2[arrival_choice], arMenu_1_2[departure_choice], userDate, userTime);
 					// 리스트에서 비행기번호 입력
 					System.out.println("비행기 번호 입력 : ");
 					plane_num2 = sc.next();
@@ -345,7 +347,8 @@ public class CoreView {
 				for (int i = 0; i < arMenu_1_2.length; i++) {
 					System.out.println((i + 1) + arMenu_1_2[i]);
 				}
-				city_choice = sc.nextInt();
+				//인덱스로 접근하기 위해서 -1
+				city_choice = sc.nextInt() - 1;
 				
 				//입실일, 퇴실일 입력
 //				★달력 출력메소드
