@@ -27,7 +27,8 @@ public class CoreView {
 
 	public static String session_id;
 
-	public void view() {Scanner sc = new Scanner(System.in);
+	public void view() {
+	Scanner sc = new Scanner(System.in);
     String title = "ABO 여행사\n";
     String menu = "1. 회원가입\n2. 로그인\n3. 비회원 예매하기\n4. 종료";
     String menu_1 = "1. 마이페이지\n2. 예매하기\n3. 로그아웃";
@@ -36,7 +37,7 @@ public class CoreView {
     String[] arMenu_1_2_1 = { "편도", "왕복" };
     String[] arMenu_1_2_2 = { "A호텔","B호텔" };
     String[] ar_reservation_chioce = {"항공권예약","호텔예약"};
-    String[] ar_planeclass_choice = {"first_c", "business_c","economy_c"}; 
+    String[] ar_planeclass_choice = {"FIRST_C", "BUSINESS_C","ECONOMY_C"}; 
     int choice = 0, trip_choice = 0,  round_choice = 0, login_choice = 0;
     int departure_choice = 0, arrival_choice = 0, city_choice = 0;
     String plane_num1 = "", plane_num2 = "", hotal_num = "";
@@ -134,6 +135,7 @@ public class CoreView {
                    System.out.println("로그인 성공");
                    //로그인 성공시 마이페이지 접근 가능!! 
                    login_flag = true;
+                   session_id = id;
                    System.out.println(menu_1);
                    choice = sc.nextInt();
                 } else {
@@ -208,7 +210,7 @@ public class CoreView {
 			// 항공권 예약
 			case 1:
 				//예약번호
-				planeReservationControl.start_plane_reservation();
+				planeReservationControl.start_plane_reservation(session_id);
 				
 				//출발지
 				System.out.println("[출발지]");
@@ -258,7 +260,7 @@ public class CoreView {
 						
 						//성인, 소아, 유아 인원수 입력
 						int seat_count = planeReservationControl.setSeatCount();
-						planeReservationControl.setSeatTotal(plane_num1, null, grade, seat_count);
+						planeReservationControl.updatePlaneQuery(plane_num1, null, grade, seat_count);
 						//예약내용 보여주기 => 왕복영역도 동일하게 사용하기 때문에 메소드로 만들면 될것 같음
 //						System.out.println("결제하시겠습니까? (y/n)");
 //						String finish = sc.next();
@@ -315,7 +317,7 @@ public class CoreView {
 						
 						//성인, 소아, 유아 인원수 입력
 						int seat_count = planeReservationControl.setSeatCount();
-						planeReservationControl.setSeatTotal(plane_num1, plane_num2, grade, seat_count);
+						planeReservationControl.updatePlaneQuery(plane_num1, plane_num2, grade, seat_count);
 						//예약내용 보여주기
 //						System.out.println("결제하시겠습니까? (y/n)");
 //						String finish = sc.next();
@@ -354,9 +356,9 @@ public class CoreView {
 				
 				//입실일, 퇴실일 입력
 //				★달력 출력메소드
-				
+				String userDate = mainPromptCalender.runPROMPT();
 				//여행지에 맞는 호텔리스트 출력(여행지,입실일 )
-//				hotelControl.hotelList(city_choice, userDate);
+				hotelControl.hotelList(arMenu_1_2[city_choice], userDate);
 				System.out.println("호텔 번호 입력 : ");
 				hotal_num = sc.next();
 				
