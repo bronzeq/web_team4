@@ -1,6 +1,7 @@
 package core;
 
 import java.util.ArrayList;
+
 import java.util.Scanner;
 
 import javax.mail.MessagingException;
@@ -56,6 +57,7 @@ public class CoreView {
     String arrive="";
     int point = 0;
     int guest = 0;
+    
     while (true) {
        System.out.println(title + menu);
        choice = sc.nextInt();
@@ -341,7 +343,7 @@ public class CoreView {
 				
 			//호텔영역
 			case 2:
-				hotelReservationControl.start_hotel_reservation();
+				hotelReservationControl.start_hotel_reservation(session_id);
 				
 				System.out.println("[여행지]");
 				for (int i = 0; i < arMenu_1_2.length; i++) {
