@@ -27,7 +27,7 @@ public class PlaneControl {
 		int compare = time1.compareTo(time2);
 		if (compare > 0) {
 			// 선택한 날이 현재 날보다 이후일 때
-			query = "SELECT * FROM AIRPLANE WHERE DEPARTURE_DATE = \'" + userDate + "\'"
+			query = "SELECT * FROM PLANE WHERE DEPARTURE_DATE = \'" + userDate + "\'"
 					+ "AND DEPARTURE = \'" + departure + "\'" + "AND ARRIVAL = \'" + arrival + "\'";
 			showAirplaneList(query);
 		} else if (compare < 0) {
@@ -35,7 +35,7 @@ public class PlaneControl {
 			System.out.println(time2 + " 이전의 날을 입력했습니다.");
 		} else {
 			// 선택한 날이 현재 날과 같을 때
-			query = "SELECT * FROM AIRPLANE WHERE DEPARTURE_DATE = \'" + userDate + "\' "
+			query = "SELECT * FROM PLANE WHERE DEPARTURE_DATE = \'" + userDate + "\' "
 					+ "AND DEPARTURE_TIME >= \'" + userTime + "\'"
 					+ "AND DEPARTURE = \'" + departure + "\'" + "AND ARRIVAL = \'" + arrival + "\'";
 			showAirplaneList(query);
@@ -55,8 +55,8 @@ public class PlaneControl {
 			+ "\t" + "SEAT_COUNT");
 			while (rs.next()) {
 				System.out.println(rs.getString(1) + "\t" + rs.getString(2) + "\t" + rs.getString(3) + "\t"
-						+ rs.getString(4) + "\t" + rs.getString(5) + "\t" + rs.getString(6) + "\t" + rs.getString(7) + "\t"
-						+ rs.getInt(8));
+						+ rs.getString(4) + "\t" + rs.getString(5) + "\t" + rs.getInt(6) + "\t"
+						+ rs.getString(7));
 			}
 			System.out.println("-----------------------------------------------------------------------");
 			pstm.close();

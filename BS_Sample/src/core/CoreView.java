@@ -30,7 +30,7 @@ public class CoreView {
     String menu = "1. 회원가입\n2. 로그인\n3. 비회원 예매하기\n4. 종료";
     String menu_1 = "1. 마이페이지\n2. 예매하기\n3. 로그아웃";
     String menu_1_1 = "1.예약 목록\n2.예약 수정\n3.회원 정보 수정 "; // 마이페이지 메뉴
-    String[] arMenu_1_2 = { "일본", "미국", "중국" };
+    String[] arMenu_1_2 = { "Japan", "America", "China" };
     String[] arMenu_1_2_1 = { "편도", "왕복" };
     String[] arMenu_1_2_2 = { "A호텔","B호텔" };
     String[] ar_reservation_chioce = {"항공권예약","호텔예약"};
@@ -234,7 +234,7 @@ public class CoreView {
 					String userDate = new MainPromptCalender().runPROMPT();
 					System.out.print("시간을 입력하세요 : ");
 					int userTime = sc.nextInt();
-					planeControl.airplaneList(departure_choice, arrival_choice, userDate, userTime);
+					planeControl.airplaneList(arMenu_1_2[departure_choice-1], arMenu_1_2[arrival_choice-1], userDate, userTime);
 					// 리스트에서 비행기번호 입력
 					//여기부터 while 문으로 감싸야 할듯? => 중복검사 때문에
 					System.out.println("비행기 번호 입력 : ");
@@ -248,7 +248,7 @@ public class CoreView {
 						}
 						String grade = ar_palneclass_choice[sc.nextInt()-1];
 						//선택한 클래스 update
-						planeReservationControl.planeClassUpdate(grade);
+//						planeReservationControl.planeClassUpdate(grade);
 						
 //						★해당 비행기번호의 가격출력 메소드
 						
@@ -280,14 +280,14 @@ public class CoreView {
 				case 2:
 //					★달력 출력메소드;
 					//달력 추가하고 갑사 받아오면 오류 없어짐
-					planeControl.airplaneList(departure_choice, arrival_choice, userDate, userTime);
+//					planeControl.airplaneList(arMenu_1_2[departure_choice], arMenu_1_2[arrival_choice], userDate, userTime);
 					// 리스트에서 비행기번호 입력
 					System.out.println("비행기 번호 입력 : ");
 					plane_num1 = sc.next();
 					
 //					★달력 출력메소드;
 					//위의 출발지와 도착지를 바꿔줌
-					planeControl.airplaneList(arrival_choice, departure_choice, userDate, userTime);
+//					planeControl.airplaneList(arMenu_1_2[departure_choice], arMenu_1_2[arrival_choice], userDate, userTime);
 					// 리스트에서 비행기번호 입력
 					System.out.println("비행기 번호 입력 : ");
 					plane_num2 = sc.next();
@@ -300,7 +300,7 @@ public class CoreView {
 						}
 						String grade = ar_palneclass_choice[sc.nextInt()-1];
 						//선택한 클래스 update
-						planeReservationControl.planeClassUpdate(grade);
+//						planeReservationControl.planeClassUpdate(grade);
 						
 //						★해당 비행기번호의 가격출력 메소드
 						
@@ -346,7 +346,7 @@ public class CoreView {
 //				★달력 출력메소드
 				
 				//여행지에 맞는 호텔리스트 출력(여행지,입실일 )
-				hotelControl.hotelList(city_choice, userDate);
+//				hotelControl.hotelList(city_choice, userDate);
 				System.out.println("호텔 번호 입력 : ");
 				hotal_num = sc.next();
 				
