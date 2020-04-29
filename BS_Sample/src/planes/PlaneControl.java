@@ -27,7 +27,7 @@ public class PlaneControl {
 		int compare = time1.compareTo(time2);
 		if (compare > 0) {
 			// 선택한 날이 현재 날보다 이후일 때
-			query = "SELECT * FROM PLANE WHERE DEPARTURE_DATE = \'" + userDate + "\'"
+			query = "SELECT * FROM AIRPLANE WHERE DEPARTURE_DATE = \'" + userDate + "\'"
 					+ "AND DEPARTURE = \'" + departure + "\'" + "AND ARRIVAL = \'" + arrival + "\'";
 			showAirplaneList(query);
 		} else if (compare < 0) {
@@ -35,7 +35,7 @@ public class PlaneControl {
 			System.out.println(time2 + " 이전의 날을 입력했습니다.");
 		} else {
 			// 선택한 날이 현재 날과 같을 때
-			query = "SELECT * FROM PLANE WHERE DEPARTURE_DATE = \'" + userDate + "\' "
+			query = "SELECT * FROM AIRPLANE WHERE DEPARTURE_DATE = \'" + userDate + "\' "
 					+ "AND DEPARTURE_TIME >= \'" + userTime + "\'"
 					+ "AND DEPARTURE = \'" + departure + "\'" + "AND ARRIVAL = \'" + arrival + "\'";
 			showAirplaneList(query);
@@ -55,8 +55,8 @@ public class PlaneControl {
 			+ "\t" + "SEAT_COUNT");
 			while (rs.next()) {
 				System.out.println(rs.getString(1) + "\t" + rs.getString(2) + "\t" + rs.getString(3) + "\t"
-						+ rs.getString(4) + "\t" + rs.getString(5) + "\t" + rs.getInt(6) + "\t"
-						+ rs.getString(7));
+						+ rs.getString(4) + "\t" + rs.getString(5) + "\t" + rs.getString(6) + "\t" + rs.getString(7) + "\t"
+						+ rs.getInt(8));
 			}
 			System.out.println("-----------------------------------------------------------------------");
 			pstm.close();
@@ -83,22 +83,23 @@ public class PlaneControl {
 		}
 	}
 
-	//등급별 가격 리턴
-	   public int price(String plane_num, String plane_grade, String age_price){
-	      String query = "SELECT ? FROM ? WHERE PLANE_NUM = ?";
-	      int price = 0;
+	//등급별 가격 출력
+	   public void price(String plane_num, String grade){
+	      String query = "SELECT * FROM ? WHERE PLANE_NUM = ?";
+	      
+	      int price[] = null;
 	      try {
 	         conn = DBConnection.getConnection();
 	         pstm = conn.prepareStatement(query);
-	         pstm.setString(1, age_price);
-	         pstm.setString(2, plane_grade);
-	         pstm.setString(3, plane_num);
+	         pstm.setString(1, grade);
+	         pstm.setString(2, plane_num);
 	         rs = pstm.executeQuery();
 	         rs.next();
 	         
-	         price = rs.getInt(1);
-	         
-	         
+	         for (int i = 0; i < price.length; i++) {
+				System.out.println("ADULT\tCHILD\tBABY\n"+ rs.getInt(1) + "\t" + rs.getInt(2) + "\t" + rs.getInt(3));
+			}
+
 	      } catch(SQLException sqle) {
 	         System.out.println("price() 쿼리문 오류");
 	      } catch (Exception e) {
@@ -118,6 +119,7 @@ public class PlaneControl {
 	            throw new RuntimeException(e.getMessage());
 	         }
 	      }
-	      return price;
+	      
 	   }
+	   	   
 }

@@ -69,21 +69,32 @@ public class MainPromptCalender {
 
       year = 2020;
 
-      System.out.println("달 입력");
-      System.out.print("month > ");
-      month = sc.nextInt();
-      
-      int max_day =new Calender().GetMaxDay(2020, month);
-      
-      cal.PrintCalinder(year, month);
-      System.out.println("일 입력");
-      System.out.print("day > ");
-      day = sc.nextInt();
-      
-      //입력불가if
-      selectDay=year+"-"+month+"-"+day;
-      //System.out.println(selectDay);
-       
+      try {
+          System.out.println("달 입력");
+          System.out.print("month > ");
+          month = sc.nextInt();
+          while (month > 12 || month < 1) {
+             System.out.println("1월에서 12월 사이의 달을 입력해주세요");
+             System.out.print("month > ");
+             month = sc.nextInt();
+          }
+          int max_day =new Calender().GetMaxDay(2020, month);
+          
+          cal.PrintCalinder(year, month);
+          System.out.println("일 입력");
+          System.out.print("day > ");
+          day = sc.nextInt();
+          while(day < 1 || day > max_day) {
+             System.out.println("일 입력");
+             System.out.print("day > ");
+             day = sc.nextInt();
+          }
+          //입력불가if
+          selectDay=year+"-"+month+"-"+day;
+          //System.out.println(selectDay);
+       } catch (Exception e){
+          cmdCal(sc, cal);
+       }
       
 
    }

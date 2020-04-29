@@ -100,127 +100,127 @@ public class PlaneReservationControl {
 	}
 	
 	//plane의 seat_total 바꾸는 메소드
-	   public void setSeatTotal(String plane_num1, String plane_num2, String grade, int total_count) {
-	      //plane_num_1에서도 사람 수 만큼 빼주어야 하고
-	      //왕복이면 plane_num_2에서도 빼주어야 함
-	      String query = "";
-	      int[] seat_total_ar = null;
-	      String seat_total = "";
-	      
-	      try {
-//	         query = "SELECT PLANE_NUM_1 AND PLANE_NUM_2 AND "
-//	               + "GRADE FROM PLANE_INFORMATION WHERE PLANE_RESERVATION = ?";
-//	         conn = DBConnection.getConnection();
-//	         pstm = conn.prepareStatement(query);
-//	         pstm.setString(1, session_plane_reservation);
-//	         rs = pstm.executeQuery();
-//	         if(rs.next()) {
-//	            plane_num1 = rs.getString(1);
-//	            plane_num2 = rs.getString(2);
-//	            grade = rs.getString(3);
-//	         }
-	         //plane_num에 다시 연결
-	         query = "SELECT SEAT_TOTAL FROM PLANE WHERE PLANE_NUM = ?";
-	         pstm = conn.prepareStatement(query);
-	         pstm.setString(1, plane_num1);
-	         rs = pstm.executeQuery();
-	         if(rs.next()) {
-	            //plane의 [economy좌석수, business좌석수, first좌석수] 배열
-	            seat_total_ar = stringToIntAr(rs.getString(1));
-	         }
-	         if(grade.equals("economy_c")) {
-	            seat_total_ar[0] -= total_count;
-	         } else if (grade.equals("business_c")) {
-	            seat_total_ar[1] -= total_count;
-	         } else {
-	            seat_total_ar[2] -= total_count;
-	         }
-	         //가격 조정 후 seat_total 다시 만들어줌
-	         seat_total = intArToString(seat_total_ar);
-	         
-	         //seat_total update
-	         query = "UPDATE PLANE SET SEAT_TOTAL = ? WHERE PLANE_NUM = ?";
-	         pstm = conn.prepareStatement(query);
-	         pstm.setString(1, seat_total);
-	         pstm.setString(2, plane_num1);
-	         pstm.executeQuery();
-	         
-	      } catch (SQLException sqle) {
-	         System.out.println(sqle);
-	         System.out.println("setSeatTotal() 쿼리문 오류");
-	      } catch (Exception e) {
-	         System.out.println(e);
-	         System.out.println("그밖의 문제(setSeatTotal())");
-	      } finally {
-	         try {
-	            if (rs != null) {
-	               rs.close();
-	            }
-	            if (pstm != null) {
-	               pstm.close();
-	            }
-	            if (conn != null) {
-	               conn.close();
-	            }
-	            
-	         } catch (SQLException e) {
-	            throw new RuntimeException(e.getMessage());
-	         }
-	      }
-	      //왕복일 경우
-	      if(plane_num2 != null) {
-	         //위의 try문 한번더(plane_num_2)
-	         try {
-	            //plane_num에 다시 연결
-	            query = "SELECT SEAT_TOTAL FROM PLANE WHERE PLANE_NUM = ?";
-	            pstm = conn.prepareStatement(query);
-	            pstm.setString(1, plane_num2);
-	            rs = pstm.executeQuery();
-	            if(rs.next()) {
-	               //plane의 [economy좌석수, business좌석수, first좌석수] 배열
-	               seat_total_ar = stringToIntAr(rs.getString(1));
-	            }
-	            if(grade.equals("economy_c")) {
-	               seat_total_ar[0] -= total_count;
-	            } else if (grade.equals("business_c")) {
-	               seat_total_ar[1] -= total_count;
-	            } else {
-	               seat_total_ar[2] -= total_count;
-	            }
-	            //가격 조정 후 seat_total 다시 만들어줌
-	            seat_total = intArToString(seat_total_ar);
-	            
-	            //seat_total update
-	            query = "UPDATE PLANE SET SEAT_TOTAL = ? WHERE PLANE_NUM = ?";
-	            pstm = conn.prepareStatement(query);
-	            pstm.setString(1, seat_total);
-	            pstm.setString(2, plane_num2);
-	            pstm.executeQuery();
-	            
-	         } catch (SQLException sqle) {
-	            System.out.println(sqle);
-	            System.out.println("setSeatTotal() 쿼리문 오류");
-	         } catch (Exception e) {
-	            System.out.println(e);
-	            System.out.println("그밖의 문제(setSeatTotal())");
-	         } finally {
-	            try {
-	               if (rs != null) {
-	                  rs.close();
-	               }
-	               if (pstm != null) {
-	                  pstm.close();
-	               }
-	               if (conn != null) {
-	                  conn.close();
-	               }
-	               
-	            } catch (SQLException e) {
-	               throw new RuntimeException(e.getMessage());
-	            }
-	         }   
-	      }
-	   }
+	public void setSeatTotal(String plane_num1, String plane_num2, String grade, int total_count) {
+		//plane_num_1에서도 사람 수 만큼 빼주어야 하고
+		//왕복이면 plane_num_2에서도 빼주어야 함
+		String query = "";
+		int[] seat_total_ar = null;
+		String seat_total = "";
+		
+		try {
+//			query = "SELECT PLANE_NUM_1 AND PLANE_NUM_2 AND "
+//					+ "GRADE FROM PLANE_INFORMATION WHERE PLANE_RESERVATION = ?";
+//			conn = DBConnection.getConnection();
+//			pstm = conn.prepareStatement(query);
+//			pstm.setString(1, session_plane_reservation);
+//			rs = pstm.executeQuery();
+//			if(rs.next()) {
+//				plane_num1 = rs.getString(1);
+//				plane_num2 = rs.getString(2);
+//				grade = rs.getString(3);
+//			}
+			//plane_num에 다시 연결
+			query = "SELECT SEAT_TOTAL FROM PLANE WHERE PLANE_NUM = ?";
+			pstm = conn.prepareStatement(query);
+			pstm.setString(1, plane_num1);
+			rs = pstm.executeQuery();
+			if(rs.next()) {
+				//plane의 [economy좌석수, business좌석수, first좌석수] 배열
+				seat_total_ar = stringToIntAr(rs.getString(1));
+			}
+			if(grade.equals("economy_c")) {
+				seat_total_ar[0] -= total_count;
+			} else if (grade.equals("business_c")) {
+				seat_total_ar[1] -= total_count;
+			} else {
+				seat_total_ar[2] -= total_count;
+			}
+			//가격 조정 후 seat_total 다시 만들어줌
+			seat_total = intArToString(seat_total_ar);
+			
+			//seat_total update
+			query = "UPDATE PLANE SET SEAT_TOTAL = ? WHERE PLANE_NUM = ?";
+			pstm = conn.prepareStatement(query);
+			pstm.setString(1, seat_total);
+			pstm.setString(2, plane_num1);
+			pstm.executeQuery();
+			
+		} catch (SQLException sqle) {
+			System.out.println(sqle);
+			System.out.println("setSeatTotal() 쿼리문 오류");
+		} catch (Exception e) {
+			System.out.println(e);
+			System.out.println("그밖의 문제(setSeatTotal())");
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstm != null) {
+					pstm.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+				
+			} catch (SQLException e) {
+				throw new RuntimeException(e.getMessage());
+			}
+		}
+		//왕복일 경우
+		if(plane_num2 != null) {
+			//위의 try문 한번더(plane_num_2)
+			try {
+				//plane_num에 다시 연결
+				query = "SELECT SEAT_TOTAL FROM PLANE WHERE PLANE_NUM = ?";
+				pstm = conn.prepareStatement(query);
+				pstm.setString(1, plane_num2);
+				rs = pstm.executeQuery();
+				if(rs.next()) {
+					//plane의 [economy좌석수, business좌석수, first좌석수] 배열
+					seat_total_ar = stringToIntAr(rs.getString(1));
+				}
+				if(grade.equals("economy_c")) {
+					seat_total_ar[0] -= total_count;
+				} else if (grade.equals("business_c")) {
+					seat_total_ar[1] -= total_count;
+				} else {
+					seat_total_ar[2] -= total_count;
+				}
+				//가격 조정 후 seat_total 다시 만들어줌
+				seat_total = intArToString(seat_total_ar);
+				
+				//seat_total update
+				query = "UPDATE PLANE SET SEAT_TOTAL = ? WHERE PLANE_NUM = ?";
+				pstm = conn.prepareStatement(query);
+				pstm.setString(1, seat_total);
+				pstm.setString(2, plane_num2);
+				pstm.executeQuery();
+				
+			} catch (SQLException sqle) {
+				System.out.println(sqle);
+				System.out.println("setSeatTotal() 쿼리문 오류");
+			} catch (Exception e) {
+				System.out.println(e);
+				System.out.println("그밖의 문제(setSeatTotal())");
+			} finally {
+				try {
+					if (rs != null) {
+						rs.close();
+					}
+					if (pstm != null) {
+						pstm.close();
+					}
+					if (conn != null) {
+						conn.close();
+					}
+					
+				} catch (SQLException e) {
+					throw new RuntimeException(e.getMessage());
+				}
+			}	
+		}
+	}
 	
 	//목록
 	public ArrayList<PlaneReservationModel> selectAll(){
