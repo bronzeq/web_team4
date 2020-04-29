@@ -18,7 +18,7 @@ public class HotelReservationControl {
 //	String session_hotel_reservation = "";
 	public static String session_hotel_reservation = "";
 	   
-	   public void start_hotel_reservation() {
+	   public void start_hotel_reservation(String session_id) {
 	      Random r = new Random();
 	      String temp = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	      for (int i = 0; i < 6; i++) {
@@ -33,11 +33,11 @@ public class HotelReservationControl {
 	          rs = pstm.executeQuery();
 	          if(rs.getInt(1) == 0) {
 	             query = "INSERT INTO HOTEL_INFORMATION"
-	                   + " (HOTEL_RESERVATION, ID, HOTEL_NUM, CHECK_IN, CHECK_OUT, ROOM_COUNT, HOTEL_TOTAL_PRICE)"
+	                   + " (ID, HOTEL_RESERVATION, HOTEL_NUM, CHECK_IN, CHECK_OUT, ROOM_COUNT, HOTEL_TOTAL_PRICE)"
 	                   + "VALUES (?,?,?,?,?,?,?)";
 	             pstm = conn.prepareStatement(query);
-	             pstm.setString(1, session_hotel_reservation);
-	             pstm.setString(2, null);
+	             pstm.setString(1, session_id);
+	             pstm.setString(2, session_hotel_reservation);
 	             pstm.setString(3, null);
 	             pstm.setString(4, null);
 	             pstm.setString(5, null);
@@ -46,11 +46,11 @@ public class HotelReservationControl {
 	             pstm.executeQuery();
 	          } else {
 	             //session_hotel_reservation 코드가 이미 DB에 있을 경우
-	             start_hotel_reservation();
+	             start_hotel_reservation(session_id);
 	          }
 	       } catch (SQLException sqle) {
 	          System.out.println(sqle);
-	          System.out.println("setSeatCount() 쿼리문 오류");
+	          System.out.println("start_hotel_reservation() 쿼리문 오류");
 	       } catch (Exception e) {
 	          System.out.println(e);
 	          System.out.println("그밖의 문제(setSeatCount())");
