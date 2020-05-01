@@ -307,7 +307,7 @@ public class HotelReservationControl {
 		String hotal_num = "";
 
 		try {
-			query = "SELECT HOTEL_NUM AND ROOM_COUNT FROM HOTEL_INFORMATION FROM WHERE HOTEL_RESERVATION = ?";
+			query = "SELECT HOTEL_NUM AND ROOM_COUNT FROM HOTEL_INFORMATION WHERE HOTEL_RESERVATION = ?";
 			conn = DBConnection.getConnection();
 			pstm = conn.prepareStatement(query);
 			pstm.setString(1, session_hotel_reservation);
@@ -319,14 +319,15 @@ public class HotelReservationControl {
 				room_total_ar = stringToIntAr(rs.getString(2));
 			}
 
-			query = "SELECT ROOM_1 AND ROOM_2 AND ROOM_4 FROM HOTEL_CLASS FROM WHERE HOTEL_NUM = ?";
+			query = "SELECT ROOM_1, ROOM_2, ROOM_4 FROM HOTEL_CLASS FROM WHERE HOTEL_NUM = ?";
 			pstm = conn.prepareStatement(query);
 			pstm.setString(1, hotal_num);
 			rs = pstm.executeQuery();
-			rs.next();
 
 			for (int i = 0; i < room_total_ar.length; i++) {
-				total_price += room_total_ar[i] * rs.getInt(i + 1);
+				//rs.getInt(2, 3, 4)해줘야 room1 room2 room4가 제대로 들어감
+				//1번째 column에는 hotel_num
+				total_price += room_total_ar[i] * rs.getInt(i + 2);
 			}
 
 		} catch (SQLException sqle) {

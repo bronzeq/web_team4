@@ -98,7 +98,8 @@ public class HotelControl {
            rs.next();
            
           
-        System.out.println("ROOM_1\tROOM_2\tROOM_4\n"+ rs.getInt(1) + "\t" + rs.getInt(2) + "\t" + rs.getInt(3));
+        System.out.println("ROOM_1\tROOM_2\tROOM_4\n"
+        + rs.getInt(2) + "\t" + rs.getInt(3) + "\t" + rs.getInt(4));
         
 
         } catch(SQLException sqle) {

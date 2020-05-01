@@ -230,6 +230,7 @@ public class PlaneReservationControl {
 				throw new RuntimeException(e.getMessage());
 			}
 		}
+		
 		// 왕복일 경우
 		if (plane_num2 != null) {
 			// 위의 try문 한번더(plane_num_2)
@@ -350,7 +351,7 @@ public class PlaneReservationControl {
 		int[] arSeat_cnt = null;
 
 		try {
-			query = "SELECT PLANE_NUM_1 AND PLANE_NUM_2 AND GRADE AND PLANE_TOTAL_PRICE"
+			query = "SELECT PLANE_NUM_1, PLANE_NUM_2, GRADE, SEAT_COUNT"
 					+ " FROM PLANE_INFORMATION WHERE PLANE_RESERVATION = ?";
 			// 쿼리문 오류 수정바람 TODO
 			conn = DBConnection.getConnection();
@@ -363,11 +364,9 @@ public class PlaneReservationControl {
 				grade = rs.getString(3);
 				arSeat_cnt = stringToIntAr(rs.getString(4));
 			}
-
-			query = "SELECT ADULT AND CHILD AND BABY FROM ? WHERE = ?";
+			query = "SELECT ADULT, CHILD, BABY FROM " + grade + " WHERE PLANE_NUM = ?";				
 			pstm = conn.prepareStatement(query);
-			pstm.setString(1, grade);
-			pstm.setString(2, plane_num_1);
+			pstm.setString(1, plane_num_1);
 			rs = pstm.executeQuery();
 			rs.next();
 			for (int i = 0; i < arSeat_cnt.length; i++) {
@@ -376,13 +375,12 @@ public class PlaneReservationControl {
 
 			if (plane_num_2 != null) {
 				// 왕복일 경우
-				query = "SELECT ADULT AND CHILD AND BABY FROM ? WHERE = ?";
+				
+				query = "SELECT ADULT, CHILD, BABY FROM " + grade + " WHERE PLANE_NUM = ?";	
 				pstm = conn.prepareStatement(query);
-				pstm.setString(1, grade);
-				pstm.setString(2, plane_num_2);
+				pstm.setString(1, plane_num_2);
 				rs = pstm.executeQuery();
 				rs.next();
-
 				for (int i = 0; i < arSeat_cnt.length; i++) {
 					total_price += arSeat_cnt[i] * rs.getInt(i + 1);
 				}
