@@ -92,8 +92,7 @@ public class PlaneControl {
 	         rs = pstm.executeQuery();
 	         rs.next();
 	         rs.getString(1);
-			System.out.println("ADULT\tCHILD\tBABY\n"
-			+ rs.getInt(2) + "\t" + rs.getInt(3) + "\t" + rs.getInt(4));
+			System.out.println(rs.getInt(2) + "\t" + rs.getInt(3) + "\t" + rs.getInt(4));
 
 	      } catch(SQLException sqle) {
 	    	  System.out.println(sqle);

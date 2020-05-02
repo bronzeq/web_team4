@@ -307,7 +307,7 @@ public class HotelReservationControl {
 		String hotal_num = "";
 
 		try {
-			query = "SELECT HOTEL_NUM AND ROOM_COUNT FROM HOTEL_INFORMATION WHERE HOTEL_RESERVATION = ?";
+			query = "SELECT HOTEL_NUM, ROOM_COUNT FROM HOTEL_INFORMATION WHERE HOTEL_RESERVATION = ?";
 			conn = DBConnection.getConnection();
 			pstm = conn.prepareStatement(query);
 			pstm.setString(1, session_hotel_reservation);
