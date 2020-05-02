@@ -18,7 +18,7 @@ public class HotelReservationControl {
 //	String session_hotel_reservation = "";
 	public static String session_hotel_reservation = "";
 
-	public void start_hotel_reservation(String session_id) {
+	public void startHotelReservation(String session_id) {
 		Random r = new Random();
 		String temp = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		for (int i = 0; i < 6; i++) {
@@ -46,7 +46,7 @@ public class HotelReservationControl {
 				rs = pstm.executeQuery();
 			} else {
 				// session_hotel_reservation 코드가 이미 DB에 있을 경우
-				start_hotel_reservation(session_id);
+				startHotelReservation(session_id);
 			}
 		} catch (SQLException sqle) {
 			System.out.println(sqle);
@@ -252,7 +252,7 @@ public class HotelReservationControl {
 //	return users;	
 //}
 	// 호텔번호 검사 메소드
-	public boolean check_hotel_num(String hotel_num) {
+	public boolean checkHotelNum(String hotel_num) {
 
 		String query = "SELECT HOTEL_NUM FROM HOTEL WHERE HOTEL_NUM = ?";
 		boolean check = false;
@@ -300,7 +300,7 @@ public class HotelReservationControl {
 	}
 
 	// 호텔 총 가격 리턴하는 메소드
-	public int hotel_total_price() {
+	public int getHotelTotalPrice() {
 		String query = "";
 		int total_price = 0;
 		int[] room_total_ar = null;

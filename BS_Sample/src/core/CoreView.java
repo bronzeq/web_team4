@@ -75,7 +75,7 @@ public class CoreView {
 				// ID입력
 				System.out.println("아이디를 입력하세요.");
 				id = sc.next();
-				if (usersControl.check_dup_id(id) == true) {
+				if (usersControl.checkDupId(id) == true) {
 					System.out.println("중복된 아이디 입니다.");
 					while (id_check) {
 						System.out.print("1. 아이디 다시 입력하기\n2. 나가기\n");
@@ -84,7 +84,7 @@ public class CoreView {
 						case 1:
 							System.out.println("아이디를 입력하세요.");
 							id = sc.next();
-							if (usersControl.check_dup_id(id) == false) {
+							if (usersControl.checkDupId(id) == false) {
 								id_check = false;
 								break;
 							}
@@ -129,7 +129,7 @@ public class CoreView {
 				pw = sc.next();
 
 				try {
-					if (usersControl.check_dup_id(id)) {
+					if (usersControl.checkDupId(id)) {
 						if (usersControl.login(id, pw)) {
 							System.out.println("로그인 성공");
 							// 로그인 성공시 마이페이지 접근 가능!!
@@ -183,12 +183,12 @@ public class CoreView {
 							new_PW = sc.next();
 							// String pw,String new_pw,String Phone,String new_phone
 							// new_phone자리에 그냥 원래 phone 변수 넣어주기 > 비밀번호만 바꾸니까. 아무것도 안넣어주면 null값이 된다.
-							flag = usersControl.Update_member(pw, new_PW, phone, phone);
+							flag = usersControl.updateMember(pw, new_PW, phone, phone);
 							System.out.println("비밀번호 수정 완료");
 						} else if (updatemember_choice == 2) {
 							System.out.println("변경하실 핸드폰 번호를 입력하세요 : ");
 							new_Phone = sc.next();
-							flag = usersControl.Update_member(pw, pw, phone, new_Phone);
+							flag = usersControl.updateMember(pw, pw, phone, new_Phone);
 							System.out.println("핸드폰 번호 수정 완료");
 						}
 						break;
@@ -208,7 +208,7 @@ public class CoreView {
 					// 항공권 예약
 					case 1:
 						// 예약번호
-						planeReservationControl.start_plane_reservation(session_id);
+						planeReservationControl.startPlaneReservation(session_id);
 
 						// 출발지
 						System.out.println("[출발지]");
@@ -239,14 +239,14 @@ public class CoreView {
 							String userDate = mainPromptCalender.runPROMPT();
 							System.out.print("시간을 입력하세요 : ");
 							int userTime = sc.nextInt();
-							planeControl.airplaneList(arMenu_1_2[departure_choice], arMenu_1_2[arrival_choice],
+							planeControl.getAirplaneList(arMenu_1_2[departure_choice], arMenu_1_2[arrival_choice],
 									userDate, userTime);
 							// 리스트에서 비행기번호 입력
 							// 여기부터 while 문으로 감싸야 할듯? => 중복검사 때문에
 							System.out.println("비행기 번호 입력 : ");
 							plane_num1 = sc.next();
 
-							if (planeReservationControl.check_plane_num(plane_num1)) {
+							if (planeReservationControl.checkPlaneNum(plane_num1)) {
 								// 비행기 클래스 선택
 								System.out.println("[비행기 클래스 선택]");
 								for (int i = 0; i < ar_planeclass_choice.length; i++) {
@@ -256,12 +256,12 @@ public class CoreView {
 
 								// 등급별 가격 출력
 								System.out.println("ADULT\tCHILD\tBABY");
-								planeControl.price(plane_num1, grade);
+								planeControl.showGradePrice(plane_num1, grade);
 
 								// 성인, 소아, 유아 인원수 입력
 								int seat_count = planeReservationControl.setSeatCount();
 								planeReservationControl.updatePlaneQuery(plane_num1, null, grade, seat_count);
-								System.out.println(planeReservationControl.total_price() + "원.");
+								System.out.println(planeReservationControl.getTotalPrice() + "원.");
 							} else {
 								System.out.println("잘못.");
 							}
@@ -281,7 +281,7 @@ public class CoreView {
 									pw = sc.next();
 
 									try {
-										if (usersControl.check_dup_id(id)) {
+										if (usersControl.checkDupId(id)) {
 											if (usersControl.login(id, pw)) {
 												System.out.println("로그인 성공");
 												// 로그인 성공시 마이페이지 접근 가능!!
@@ -317,7 +317,7 @@ public class CoreView {
 							userDate = mainPromptCalender.runPROMPT();
 							System.out.print("시간을 입력하세요 : ");
 							userTime = sc.nextInt();
-							planeControl.airplaneList(arMenu_1_2[departure_choice], arMenu_1_2[arrival_choice],
+							planeControl.getAirplaneList(arMenu_1_2[departure_choice], arMenu_1_2[arrival_choice],
 									userDate, userTime);
 							// 리스트에서 비행기번호 입력
 							System.out.println("비행기 번호 입력 : ");
@@ -328,14 +328,14 @@ public class CoreView {
 							userDate = mainPromptCalender.runPROMPT();
 							System.out.print("시간을 입력하세요 : ");
 							userTime = sc.nextInt();
-							planeControl.airplaneList(arMenu_1_2[arrival_choice], arMenu_1_2[departure_choice],
+							planeControl.getAirplaneList(arMenu_1_2[arrival_choice], arMenu_1_2[departure_choice],
 									userDate, userTime);
 							// 리스트에서 비행기번호 입력
 							System.out.println("비행기 번호 입력 : ");
 							plane_num2 = sc.next().toUpperCase();
 
-							if (planeReservationControl.check_plane_num(plane_num1)
-									&& planeReservationControl.check_plane_num(plane_num2)) {
+							if (planeReservationControl.checkPlaneNum(plane_num1)
+									&& planeReservationControl.checkPlaneNum(plane_num2)) {
 								// 비행기 클래스 선택
 								System.out.println("[비행기 클래스 선택]");
 								for (int i = 0; i < ar_planeclass_choice.length; i++) {
@@ -345,13 +345,13 @@ public class CoreView {
 
 								// 등급별 가격 출력
 								System.out.println("ADULT\tCHILD\tBABY");
-								planeControl.price(plane_num1, grade);
-								planeControl.price(plane_num2, grade);
+								planeControl.showGradePrice(plane_num1, grade);
+								planeControl.showGradePrice(plane_num2, grade);
 
 								// 성인, 소아, 유아 인원수 입력
 								int seat_count = planeReservationControl.setSeatCount();
 								planeReservationControl.updatePlaneQuery(plane_num1, plane_num2, grade, seat_count);
-								System.out.println(planeReservationControl.total_price() + "원.");
+								System.out.println(planeReservationControl.getTotalPrice() + "원.");
 							} else {
 								System.out.println("잘못된 입력입니다.");
 							}
@@ -371,7 +371,7 @@ public class CoreView {
 									pw = sc.next();
 
 									try {
-										if (usersControl.check_dup_id(id)) {
+										if (usersControl.checkDupId(id)) {
 											if (usersControl.login(id, pw)) {
 												System.out.println("로그인 성공");
 												// 로그인 성공시 마이페이지 접근 가능!!
@@ -408,7 +408,7 @@ public class CoreView {
 
 						// 호텔영역
 					case 2:
-						hotelReservationControl.start_hotel_reservation(session_id);
+						hotelReservationControl.startHotelReservation(session_id);
 
 						System.out.println("[여행지]");
 						for (int i = 0; i < arMenu_1_2.length; i++) {
@@ -421,7 +421,7 @@ public class CoreView {
 //				★달력 출력메소드
 						String userDate = mainPromptCalender.runPROMPT();
 						// 여행지에 맞는 호텔리스트 출력(여행지,입실일 )
-						hotelControl.hotelList(arMenu_1_2[city_choice], userDate);
+						hotelControl.getHotelList(arMenu_1_2[city_choice], userDate);
 						System.out.println("호텔 번호 입력 : ");
 						hotal_num = sc.next();
 
@@ -446,7 +446,7 @@ public class CoreView {
 //					}else {
 //						System.out.println("잘못된 입력입니다. (y/n)로 입력하세요");
 //					}
-						System.out.print(hotelReservationControl.hotel_total_price() + "원.");
+						System.out.print(hotelReservationControl.getHotelTotalPrice() + "원.");
 //				}else{
 //					System.out.println("잘못된 입력입니다.");
 //				}

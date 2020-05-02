@@ -17,7 +17,7 @@ public class PlaneReservationControl {
 //	String session_plane_reservation = "";
 	public static String session_plane_reservation = "";
 
-	public void start_plane_reservation(String session_id) {
+	public void startPlaneReservation(String session_id) {
 		Random r = new Random();
 		String temp = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		for (int i = 0; i < 6; i++) {
@@ -45,7 +45,7 @@ public class PlaneReservationControl {
 				pstm.executeQuery();
 			} else {
 				// session_plane_reservation 코드가 이미 DB에 있을 경우
-				start_plane_reservation(session_id);
+				startPlaneReservation(session_id);
 			}
 		} catch (SQLException sqle) {
 			System.out.println(sqle);
@@ -342,7 +342,7 @@ public class PlaneReservationControl {
 //	}
 
 //	 총 가격 리턴하는 메소드
-	public int total_price() {
+	public int getTotalPrice() {
 		String query = "";
 		int total_price = 0;
 		String plane_num_1 = "";
@@ -412,7 +412,7 @@ public class PlaneReservationControl {
 	}
 
 	// 항공기 번호가 있는지 확인하는 메소드
-	public boolean check_plane_num(String plane_num) {
+	public boolean checkPlaneNum(String plane_num) {
 
 		String query = "SELECT PLANE_NUM FROM PLANE WHERE PLANE_NUM = ?";
 		boolean check = false;

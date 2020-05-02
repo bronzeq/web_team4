@@ -29,7 +29,7 @@ public class HotelControl {
 
 	// 호텔 리스트 출력 
 	// TODO 호텔에는 시간이 없는데 과연 여기에도 시간을 써야할까요?
-	public void hotelList(String country, String userDate) {
+	public void getHotelList(String country, String userDate) {
 		String query = "";
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 		// time1 == user가 선택한 시간
@@ -86,10 +86,8 @@ public class HotelControl {
 		}
 	}
 	
-	public void hotel_price_list(String hotel_num){
+	public void showHotelPriceList(String hotel_num){
         String query = "SELECT * FROM HOTEl_CLASS WHERE HOTEL_NUM = ?";
-        
-        int price[] = null;
         try {
            conn = DBConnection.getConnection();
            pstm = conn.prepareStatement(query);

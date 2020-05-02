@@ -15,7 +15,7 @@ public class PlaneControl {
 	ResultSet rs;
 
 	// 항공기 출력 메소드
-	public void airplaneList(String departure, String arrival, String userDate, int userTime) {
+	public void getAirplaneList(String departure, String arrival, String userDate, int userTime) {
 		String query = "";
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
 		// time1 == user가 선택한 시간
@@ -83,7 +83,7 @@ public class PlaneControl {
 	}
 
 	//등급별 가격 출력
-	   public void price(String plane_num, String grade){
+	   public void showGradePrice(String plane_num, String grade){
 	      String query = "SELECT * FROM " + grade + " WHERE PLANE_NUM = ?";
 	      try {
 	         conn = DBConnection.getConnection();

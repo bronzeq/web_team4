@@ -32,8 +32,8 @@ public class UsersControl {
 		String host = "smtp.naver.com";
 
 		// --- 안에 보내는 사람 이메일 주소(@naver.com)제외, 비밀번호
-		final String id = "smy1550";
-		final String pw = "xy5544xy";
+		final String id = "---";
+		final String pw = "---";
 		int port = 465;
 
 		String recipient = email;
@@ -60,7 +60,7 @@ public class UsersControl {
 
 		Message mimeMessage = new MimeMessage(session);
 		// --- 안에 보내는 사람 이메일 주소 넣기 (@naver.com) 포함
-		mimeMessage.setFrom(new InternetAddress("smy1550@naver.com"));
+		mimeMessage.setFrom(new InternetAddress("---@naver.com"));
 		mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
 		mimeMessage.setSubject(subject);
 		mimeMessage.setText(Integer.toString(body));
@@ -139,7 +139,6 @@ public class UsersControl {
 			if (rs.next()) {
 				if (rs.getInt(1) == 1) {
 					check = true;
-					
 				}
 				session_id = id;
 			}
@@ -176,7 +175,7 @@ public class UsersControl {
 	}
 	
 	//회원정보수정 메소드
-	   public boolean Update_member(String pw,String new_pw,String phone,String new_phone) {
+	   public boolean updateMember(String pw,String new_pw,String phone,String new_phone) {
 	      //DB에서 회원정보를 가져오기 위해 Update 사용한다.
 	      //수정하고 다시 그 값을 넣어야한다. 
 	      //수정 내용 = 비밀번호, 핸드폰번호 바꾸기. >네이버 회원정보 수정 참고
@@ -220,7 +219,7 @@ public class UsersControl {
 	   }
 
 	// 아이디 중복확인 메소드
-	public boolean check_dup_id(String id) {
+	public boolean checkDupId(String id) {
 		String query = "SELECT COUNT(*) FROM GUEST WHERE ID = ?";
 		boolean check = true;
 		try {
