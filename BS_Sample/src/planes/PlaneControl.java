@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Scanner;
 
 import calender.Calender;
 import calender.MainPromptCalender;
@@ -17,10 +18,10 @@ public class PlaneControl {
 	ResultSet rs;
 
 	// 항공기 출력 메소드
-	public void getAirplaneList(String departure, String arrival, String userDate, int userTime) {
+	public int getAirplaneList(String departure, String arrival, String userDate, int userTime) {
 		String query = "";
+		Scanner sc = new Scanner(System.in);
 		SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-		boolean check_plane = true;
 		MainPromptCalender cal = new MainPromptCalender();
 		// time1 == user가 선택한 시간
 		// time2 == 현재시간
@@ -40,7 +41,13 @@ public class PlaneControl {
 			rs = pstm.executeQuery();
 			rs.next();
 			if(rs.getInt(1) == 0) {
-				check_plane = false;
+				System.out.println(userDate + "에 출발하는 비행기가 없습니다.");
+				System.out.println("출발일을 다시 입력해주세요");
+				userDate = cal.runPROMPT();
+				System.out.print("시간을 입력하세요 : ");
+				userTime = sc.nextInt();
+				getAirplaneList(departure, arrival, userDate, userTime);
+				return 0;
 			}
 			
 		} catch (SQLException sqle) {
@@ -64,12 +71,7 @@ public class PlaneControl {
 				throw new RuntimeException(e.getMessage());
 			}
 		}
-		if (!check_plane) {
-			System.out.println(userDate + "에 출발하는 비행기가 없습니다.");
-			System.out.println("출발일을 다시 입력해주세요");
-			userDate = cal.runPROMPT();
-			getAirplaneList(departure, arrival, userDate, userTime);
-		}
+
 		if (compare > 0) {
 			// 선택한 날이 현재 날보다 이후일 때
 			query = "SELECT * FROM PLANE WHERE DEPARTURE_DATE = \'" + userDate + "\'"
@@ -89,6 +91,7 @@ public class PlaneControl {
 					+ "AND DEPARTURE = \'" + departure + "\'" + "AND ARRIVAL = \'" + arrival + "\'";
 			showAirplaneList(query);
 		}
+		return 0;
 	}
 
 	// 항공기 리스트 출력
