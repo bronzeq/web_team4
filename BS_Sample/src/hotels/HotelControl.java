@@ -11,18 +11,7 @@ import java.util.Scanner;
 import core.DBConnection;
 
 public class HotelControl {
-
-	// HotelControl
-
-	/*
-	 * 
-	 * FlightControl과 비슷하게,
-	 * 
-	 * 호텔은 Reservation의 종속 모델이기 때문에 할것이 많지는 않습니다 비슷하게 List나 Admin용 추가하기 삭제하기 등등만 있으면
-	 * 충분하지 않을까 합니다
-	 * 
-	 */
-
+	
 	Connection conn;
 	PreparedStatement pstm;
 	ResultSet rs;
@@ -122,21 +111,7 @@ public class HotelControl {
         
      }
 
-	
-	public void setSeatCount() {
-		int adult = 0;
-		int child = 0;
-		int baby = 0;
-		
-		Scanner sc = new Scanner(System.in);
-		adult = sc.nextInt();
-		child = sc.nextInt();
-		baby = sc.nextInt();
-		
-		String seat_count = adult + "," + child + "," + baby;
-		
-		
-	}
+
 	
 	
 	

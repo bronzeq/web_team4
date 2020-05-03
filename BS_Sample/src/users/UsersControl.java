@@ -255,4 +255,37 @@ public class UsersControl {
 		}
 		return check;
 	}
+	//포인트 적립 메소드
+	public void pointUpdate(int point, String id) {
+		String query = "";
+		try {
+			query = "UPDATE GUEST SET POINT = ?" + " WHERE ID = ?";
+			conn = DBConnection.getConnection();
+			pstm = conn.prepareStatement(query);
+			pstm.setInt(1, point);
+			pstm.setString(2, id);
+			rs = pstm.executeQuery();
+		} catch (SQLException sqle) {
+			System.out.println(sqle);
+			System.out.println("pointUpdate() 쿼리문 오류");
+		} catch (Exception e) {
+			System.out.println(e);
+			System.out.println("그밖의 문제(pointUpdate())");
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstm != null) {
+					pstm.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+
+			} catch (SQLException e) {
+				throw new RuntimeException(e.getMessage());
+			}
+		}
+	}
 }

@@ -342,7 +342,7 @@ public class PlaneReservationControl {
 //	}
 
 //	 총 가격 리턴하는 메소드
-	public int getTotalPrice() {
+	public int getPlaneTotalPrice() {
 		String query = "";
 		int total_price = 0;
 		String plane_num_1 = "";
