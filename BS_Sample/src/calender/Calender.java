@@ -23,17 +23,7 @@ public class Calender {
 	 * @param plan
 	 * @throws ParseException 
 	 */
-	
-	public void registerPlan(String strDate, String plan) throws ParseException  {
-		Date data=new SimpleDateFormat("yyyy-mm-dd").parse(strDate);
-		System.out.println(data);		
-		planMap.put(data, plan);
-	}
-	public String searchPlan(String strDate) throws ParseException {
-		Date date=new SimpleDateFormat("yyyy-mm-dd").parse(strDate);
-		String plan= planMap.get(date);
-		return plan;
-	}
+
 
 	public boolean isLeepYear(int year) {
 		if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0))
@@ -42,7 +32,7 @@ public class Calender {
 			return false;
 	}
 
-//ÇØ´ç ´ŞÀÇ ÃÖ´ë ÀÏÀ» °¡Á®¿Â´Ù.
+//í•´ë‹¹ ë‹¬ì˜ ìµœëŒ€ ì¼ì„ ê°€ì ¸ì˜¨ë‹¤.
 	public int GetMaxDay(int year, int month) {
 		if (isLeepYear(year)) {
 			return LEEP_MAX_DAYS[month];
@@ -50,9 +40,9 @@ public class Calender {
 			return MAX_DAYS[month];
 	}
 
-	// ´Ş·Â Ãâ·Â
+	// ë‹¬ë ¥ ì¶œë ¥
 	public void PrintCalinder(int year, int month) {
-		System.out.printf("      <<%d³â %d¿ù>> \n", year, month);
+		System.out.printf("      <<%dë…„ %dì›”>> \n", year, month);
 		System.out.println(" SU   MO   TU   WE    TH   FR   SA");
 		System.out.println("-------------------------------------");
 
@@ -61,12 +51,12 @@ public class Calender {
 
 		// print blink
 		for (int i = 0; i < WeekDay; i++) {
-			System.out.print("     "); // ³¯Â¥°£ °ø¹é
+			System.out.print("     "); // ë‚ ì§œê°„ ê³µë°±
 		}
 		int Maxday = GetMaxDay(year, month);
 		int count = 7 - WeekDay;
 		int delim = (count < 7) ? count : 0;
-		// F_LINE 1ÁÖ
+		// F_LINE 1ì£¼
 		for (int i = 1; i <= count; i++) {
 			System.out.printf("%3d  ", i);
 		}
@@ -92,7 +82,7 @@ public class Calender {
 		int count = 0;
 
 		for (int i = syear; i < year; i++) {
-			int delta = (isLeepYear(i)) ? 366 : 365;// 1³âÀÇ ÀÏ ¼ö
+			int delta = (isLeepYear(i)) ? 366 : 365;// 1ë…„ì˜ ì¼ ìˆ˜
 			count += delta;
 		}
 
