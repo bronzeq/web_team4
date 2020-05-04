@@ -92,7 +92,7 @@ public class HotelReservationControl {
 		room_count = room_1 + "," + room_2 + "," + room_4;
 
 		try {
-			query = "UPDATE HOTEL_INFORMATION SET ROOM_COUNT = ?" + " WHERE ROOM_RESERVATION = ?";
+			query = "UPDATE HOTEL_INFORMATION SET ROOM_COUNT = ? WHERE HOTEL_RESERVATION = ?";
 			conn = DBConnection.getConnection();
 			pstm = conn.prepareStatement(query);
 			pstm.setString(1, room_count);
@@ -100,10 +100,10 @@ public class HotelReservationControl {
 			rs = pstm.executeQuery();
 		} catch (SQLException sqle) {
 			System.out.println(sqle);
-			System.out.println("setSeatCount() 쿼리문 오류");
+			System.out.println("setRoomCount() 쿼리문 오류");
 		} catch (Exception e) {
 			System.out.println(e);
-			System.out.println("그밖의 문제(setSeatCount())");
+			System.out.println("그밖의 문제(setRoomCount())");
 		} finally {
 			try {
 				if (rs != null) {
@@ -152,7 +152,6 @@ public class HotelReservationControl {
 		
 		try {
 //			query = "SELECT HOTEL_NUM AND ROOM_COUNT FROM HOTEL_INFORMATION " + "WHERE HOTEL_RESERVATION = ?";
-//			conn = DBConnection.getConnection();
 //			pstm = conn.prepareStatement(query);
 //			pstm.setString(1, session_hotel_reservation);
 //			rs = pstm.executeQuery();
@@ -162,14 +161,15 @@ public class HotelReservationControl {
 //			}
 			
 			// hotel_num에 다시 연결
-			query = "SELECT ROOM_TOTAL FROM HOTEL WHERE PLANE_NUM = ?";
+			conn = DBConnection.getConnection();
+			query = "SELECT ROOM_TOTAL FROM HOTEL WHERE HOTEL_NUM = ?";
 			pstm = conn.prepareStatement(query);
 			pstm.setString(1, hotel_num);
 			rs = pstm.executeQuery();
-			if (rs.next()) {
-				// hotel의 구분자로 나뉘어진 room_total 가져옴
-				room_total = rs.getString(1);
-			}
+			rs.next();
+			// hotel의 구분자로 나뉘어진 room_total 가져옴
+			room_total = rs.getString(1);
+
 			// 계산한 뒤 다시 room_total에 담아줌
 			room_total = calRoomTotal(room_total, room_count);
 
@@ -181,26 +181,14 @@ public class HotelReservationControl {
 			pstm.executeQuery();
 			
 			// hotel_num update
-			query = "UPDATE HOTEL_INFORMATION SET HOTEL_NUM = ? WHERE PLANE_RESERVATION = ?";
+			query = "UPDATE HOTEL_INFORMATION SET HOTEL_NUM = ?"
+					+ ", CHECK_IN = ?, CHECK_OUT = ? WHERE HOTEL_RESERVATION = ?";
 			pstm = conn.prepareStatement(query);
 			pstm.setString(1, hotel_num);	
-			pstm.setString(2, session_hotel_reservation);
+			pstm.setString(2, check_in);	
+			pstm.setString(3, check_out);	
+			pstm.setString(4, session_hotel_reservation);
 			pstm.executeQuery();
-			
-			// check_in update
-			query = "UPDATE HOTEL_INFORMATION SET CHECK_IN = ? WHERE PLANE_RESERVATION = ?";
-			pstm = conn.prepareStatement(query);
-			pstm.setString(1, check_in);	
-			pstm.setString(2, session_hotel_reservation);
-			pstm.executeQuery();
-			
-			// check_out update
-			query = "UPDATE HOTEL_INFORMATION SET CHECK_OUT = ? WHERE PLANE_RESERVATION = ?";
-			pstm = conn.prepareStatement(query);		
-			pstm.setString(1, check_out);	
-			pstm.setString(2, session_hotel_reservation);
-			pstm.executeQuery();
-			
 
 		} catch (SQLException sqle) {
 			System.out.println(sqle);
@@ -345,15 +333,16 @@ public class HotelReservationControl {
 				room_total_ar = stringToIntAr(rs.getString(2));
 			}
 
-			query = "SELECT ROOM_1, ROOM_2, ROOM_4 FROM HOTEL_CLASS FROM WHERE HOTEL_NUM = ?";
+			//TODO 쿼리문 오류
+			query = "SELECT ROOM_1, ROOM_2, ROOM_4 FROM HOTEL_CLASS WHERE HOTEL_NUM = ?";
 			pstm = conn.prepareStatement(query);
 			pstm.setString(1, hotal_num);
 			rs = pstm.executeQuery();
-
+			rs.next();
 			for (int i = 0; i < room_total_ar.length; i++) {
 				//rs.getInt(2, 3, 4)해줘야 room1 room2 room4가 제대로 들어감
 				//1번째 column에는 hotel_num
-				total_price += room_total_ar[i] * rs.getInt(i + 2);
+				total_price += room_total_ar[i] * rs.getInt(i + 1);
 			}
 
 		} catch (SQLException sqle) {
