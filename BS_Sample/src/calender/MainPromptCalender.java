@@ -63,37 +63,21 @@ public class MainPromptCalender {
 
 		year = 2020;
 
-		System.out.println("´Þ ÀÔ·Â");
+		System.out.println("ë‹¬ ìž…ë ¥");
 		System.out.print("month > ");
 		month = sc.nextInt();
 
 		cal.PrintCalinder(year, month);
-		System.out.println("ÀÏ ÀÔ·Â");
+		System.out.println("ì¼ ìž…ë ¥");
 		System.out.print("day > ");
 		day = sc.nextInt();
 
-		// ÀÔ·ÂºÒ°¡if
+		// ìž…ë ¥ë¶ˆê°€if
 		selectDay = year + "-" + month + "-" + day;
 		// System.out.println(selectDay);
 
 	}
 
-	private void cmdSearch(Scanner sc, Calender cal) throws ParseException {
-		System.out.println("³¯Â¥¼±ÅÃ");
-		String date = selectDay;
-		String text = sc.nextLine();
-		cal.registerPlan(date, text);
-	}
-//   private void cmdRegister(Scanner sc,Calender cal) throws ParseException {
-//      System.out.println("µî·Ï"); 
-//      System.out.println("yyyy-mm-dd");
-//      String date=sc.nextLine();
-//      String text=sc.nextLine();
-//      cal.registerPlan(date, text);      
-//   }
 
-	public static void main(String[] args) {
-		MainPromptCalender p = new MainPromptCalender();
-		p.runPROMPT();
-	}
+	
 }
